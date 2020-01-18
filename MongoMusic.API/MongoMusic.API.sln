@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoMusic.API", "MongoMusic.API\MongoMusic.API.csproj", "{3F7B0D56-12AF-4593-8887-09E842EB0795}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F7B0D56-12AF-4593-8887-09E842EB0795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F7B0D56-12AF-4593-8887-09E842EB0795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F7B0D56-12AF-4593-8887-09E842EB0795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F7B0D56-12AF-4593-8887-09E842EB0795}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ECD5B15E-D3E9-4B94-AA77-2D3C25F11C6E}
+	EndGlobalSection
+EndGlobal
