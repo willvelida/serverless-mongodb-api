@@ -37,9 +37,11 @@ namespace MongoMusic.API.Functions
 
         [FunctionName(nameof(CreateAlbum))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "CreateAlbum")] HttpRequest req)
         {
             IActionResult returnValue = null;
+
+            _logger.LogInformation("Looks like we have been connected!");
 
             return returnValue;
         }
