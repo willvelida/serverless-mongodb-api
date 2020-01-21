@@ -14,17 +14,17 @@ using MongoMusic.API.Helpers;
 
 namespace MongoMusic.API.Functions
 {
-    public class CreateAlbum
+    public class GetAlbum
     {
         private readonly MongoClient _mongoClient;
         private readonly ILogger _logger;
         private readonly IConfiguration _config;
 
         private readonly IMongoCollection<Album> _albums;
-        
-        public CreateAlbum(
+
+        public GetAlbum(
             MongoClient mongoClient,
-            ILogger<CreateAlbum> logger,
+            ILogger<GetAlbum> logger,
             IConfiguration config)
         {
             _mongoClient = mongoClient;
@@ -35,36 +35,32 @@ namespace MongoMusic.API.Functions
             _albums = database.GetCollection<Album>(_config[Settings.COLLECTION_NAME]);
         }
 
-        [FunctionName(nameof(CreateAlbum))]
+        [FunctionName(nameof(GetAlbum))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateAlbum")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Album/{id}")] HttpRequest req,
+            string id)
         {
             IActionResult returnValue = null;
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
-            var input = JsonConvert.DeserializeObject<Album>(requestBody);
-
-            var album = new Album
-            {
-                AlbumName = input.AlbumName,
-                Artist = input.Artist,
-                Price = input.Price,
-                ReleaseDate = input.ReleaseDate,
-                Genre = input.Genre
-            };
-
             try
             {
-                _albums.InsertOne(album);
-                returnValue = new OkObjectResult(album);
+                var result =_albums.Find(album => album.Id == id).FirstOrDefault();
+
+                if (result == null)
+                {
+                    _logger.LogWarning("That item doesn't exist!");
+                    return new NotFoundResult();
+                }
+                else
+                {
+                    returnValue = new OkObjectResult(result);
+                }               
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown: {ex.Message}");
+                _logger.LogError($"Couldn't find Album with id: {id}. Exception thrown: {ex.Message}");
                 returnValue = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-            
 
             return returnValue;
         }
