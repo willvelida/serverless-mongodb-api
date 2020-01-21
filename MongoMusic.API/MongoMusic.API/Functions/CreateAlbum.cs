@@ -37,11 +37,36 @@ namespace MongoMusic.API.Functions
 
         [FunctionName(nameof(CreateAlbum))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "CreateAlbum")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateAlbum")] HttpRequest req)
         {
             IActionResult returnValue = null;
 
-            _logger.LogInformation("Looks like we have been connected!");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            var input = JsonConvert.DeserializeObject<Album>(requestBody);
+
+            var album = new Album
+            {
+                // TODO: Need to Generate this ourselves
+                Id = "5bfd996f7b8e48dc15ff215d",
+                AlbumName = input.AlbumName,
+                Artist = input.Artist,
+                Price = input.Price,
+                ReleaseDate = input.ReleaseDate,
+                Genre = input.Genre
+            };
+
+            try
+            {
+                _albums.InsertOne(album);
+                returnValue = new OkObjectResult(album);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown: {ex.Message}");
+                returnValue = new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            
 
             return returnValue;
         }
