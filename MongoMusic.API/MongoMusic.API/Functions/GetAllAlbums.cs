@@ -14,7 +14,7 @@ using MongoMusic.API.Helpers;
 
 namespace MongoMusic.API.Functions
 {
-    public class GetAlbum
+    public class GetAllAlbums
     {
         private readonly MongoClient _mongoClient;
         private readonly ILogger _logger;
@@ -22,9 +22,9 @@ namespace MongoMusic.API.Functions
 
         private readonly IMongoCollection<Album> _albums;
 
-        public GetAlbum(
+        public GetAllAlbums(
             MongoClient mongoClient,
-            ILogger<GetAlbum> logger,
+            ILogger<GetAllAlbums> logger,
             IConfiguration config)
         {
             _mongoClient = mongoClient;
@@ -35,30 +35,29 @@ namespace MongoMusic.API.Functions
             _albums = database.GetCollection<Album>(_config[Settings.COLLECTION_NAME]);
         }
 
-        [FunctionName(nameof(GetAlbum))]
+        [FunctionName(nameof(GetAllAlbums))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Album/{id}")] HttpRequest req,
-            string id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Albums")] HttpRequest req)
         {
             IActionResult returnValue = null;
 
             try
             {
-                var result =_albums.Find(album => album.Id == id).FirstOrDefault();
+                var result = _albums.Find(album => true).ToList();
 
                 if (result == null)
                 {
-                    _logger.LogWarning("That item doesn't exist!");
+                    _logger.LogInformation($"There are no albums in the collection");
                     returnValue = new NotFoundResult();
                 }
                 else
                 {
                     returnValue = new OkObjectResult(result);
-                }               
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Couldn't find Album with id: {id}. Exception thrown: {ex.Message}");
+                _logger.LogError($"Exception thrown: {ex.Message}");
                 returnValue = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
